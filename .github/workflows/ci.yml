@@ -1,0 +1,13 @@
+name: C++ CI (G++)
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Compile
+      run: g++ -std=c++17 -Wall -Wextra -pedantic -Werror print_ip.cpp -o print_ip
