@@ -15,5 +15,6 @@ int main()
     print_ip( std::string{"Hello, World!"});
     print_ip( std::vector<int>{100, 200, 300, 400} );
     print_ip( std::list<short>{400, 300, 200, 100} );
+
     return 0;
 }
