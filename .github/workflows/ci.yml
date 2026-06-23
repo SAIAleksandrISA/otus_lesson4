@@ -11,3 +11,16 @@ jobs:
 
     - name: Compile
       run: g++ -std=c++17 -Wall -Wextra -pedantic -Werror print_ip.cpp -o print_ip
+      
+    - name: Install Doxygen
+      run: sudo apt-get update && sudo apt-get install -y doxygen
+
+    - name: Generate Doxygen Docs
+      run: doxygen Doxyfile
+
+    - name: Deploy to GitHub Pages
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/html

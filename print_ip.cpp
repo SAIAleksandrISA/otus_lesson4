@@ -1,3 +1,9 @@
+﻿/**
+ * @file print_ip.cpp
+ * @brief Основной файл приложения для демонстрации работы print_ip.
+ *
+ * Содержит функцию main, которая вызывает различные  print_ip.
+ */
 #include "print_ip.hpp"
 
 int main()
