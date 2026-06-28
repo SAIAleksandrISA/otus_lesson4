@@ -12,7 +12,7 @@
 #include <type_traits>
 #include <vector>
 #include <list>
-
+#include <type_traits>
 
 // --- Вспомогательные структуры для SFINAE ---
 
@@ -43,6 +43,31 @@ template <typename T> struct is_std_list : std::false_type {};
  * @tparam Alloc Тип аллокатора списка.
  */
 template <typename T_Elem> struct is_std_list<std::list<T_Elem>> : std::true_type {};
+
+/**
+ * @brief Определяет, является ли тип std::tuple.
+ *
+ * Используется для SFINAE-проверки в шаблонных функциях.
+ */
+template<typename T> struct is_same_tuple : std::false_type {};
+
+/**
+ * @brief Определяет, является ли все элементы одного типа.
+ *
+ * Используется для SFINAE-проверки в шаблонных функциях.
+ */
+template<typename T, typename... Args> struct all_same 
+{
+    static constexpr bool value = (std::is_same<T, Args>::value && ...);
+};
+
+/**
+ * @brief Определяет, является ли все элементы одного типа.
+ *
+ * Используется для SFINAE-проверки в шаблонных функциях.
+ */
+template<typename T, typename... Args>
+struct is_same_tuple<std::tuple<T, Args...>> : all_same<T, Args...> {};
 
 // --- Шаблонные функции print_ip ---
 
@@ -114,4 +139,28 @@ print_ip(const T& value)
         first = false;
     }
     std::cout << std::endl;
+}
+
+/**
+ * @brief Печатает содержимое контейнеров std::tuple
+ *
+ * @details Эта функция проходит по всем элементам контейнера (tuple),
+ * выводя каждый элемент через точку. Работает при условии что в tuple,
+ * лежат одинаковые типы.
+ * Работает с использованием SFINAE через комбинацию is_same_tuple.
+ *
+ * @tparam T Тип контейнера. Должен быть std::tuple.
+ * @param value Контейнер для печати.
+ */
+template<typename T> typename std::enable_if<is_same_tuple<T>::value>::type
+print_ip(const T& t)
+{
+
+    std::apply([](auto&&... args)
+        {
+            bool first = true;
+            ((std::cout << (first ? "" : ".") << args , first = false ), ...);
+            std::cout << std::endl;
+        }
+        , t);
 }
